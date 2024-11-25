@@ -1,0 +1,2 @@
+
+This project leverages machine learning techniques to predict League of Legends match outcomes using logistic regression. By preprocessing the data, training a PyTorch model, and optimizing it with techniques like L2 regularization and hyperparameter tuning, we improve its accuracy. Insights are gained through feature importance analysis and visualizations, offering a comprehensive understanding of key predictors impacting match results.
