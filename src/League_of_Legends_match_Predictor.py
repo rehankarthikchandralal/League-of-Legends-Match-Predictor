@@ -58,7 +58,7 @@ optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=0.01)
 print("\nLoss Function: Binary Cross-Entropy Loss (BCELoss)")
 print("Optimizer: Stochastic Gradient Descent (SGD) with L2 Regularization (weight_decay=0.01)")
 
-# Additional Lines: Create a DataLoader for batching
+# Create DataLoader for batching
 train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
 test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
 
@@ -73,7 +73,7 @@ print(f"Test DataLoader: {len(test_loader)} batches")
 # Number of epochs
 num_epochs = 1000
 
-# Training loop
+# Training loop with L2 Regularization
 for epoch in range(num_epochs):
     model.train()  # Set model to training mode
     epoch_loss = 0.0
@@ -104,6 +104,6 @@ with torch.no_grad():  # Disable gradient computation
     test_predictions = (test_outputs >= 0.5).float()
     test_accuracy = (test_predictions == y_test_tensor).float().mean().item() * 100
 
-# Print accuracy
+# Print accuracy after evaluation
 print(f"\nTraining Accuracy: {train_accuracy:.2f}%")
 print(f"Testing Accuracy: {test_accuracy:.2f}%")
