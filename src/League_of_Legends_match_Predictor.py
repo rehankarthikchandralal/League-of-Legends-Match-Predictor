@@ -77,3 +77,41 @@ test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 print("\nDataLoaders:")
 print(f"Train DataLoader: {len(train_loader)} batches")
 print(f"Test DataLoader: {len(test_loader)} batches")
+
+# Number of epochs
+num_epochs = 1000
+
+# Training loop
+for epoch in range(num_epochs):
+    model.train()  # Set model to training mode
+    epoch_loss = 0.0
+    
+    for X_batch, y_batch in train_loader:
+        optimizer.zero_grad()  # Clear gradients
+        outputs = model(X_batch)  # Forward pass
+        loss = criterion(outputs, y_batch)  # Compute loss
+        loss.backward()  # Backpropagation
+        optimizer.step()  # Update weights
+        
+        epoch_loss += loss.item()  # Accumulate batch loss
+
+    # Print loss every 100 epochs
+    if (epoch + 1) % 100 == 0:
+        print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {epoch_loss / len(train_loader):.4f}")
+
+# Model Evaluation
+model.eval()  # Set model to evaluation mode
+with torch.no_grad():  # Disable gradient computation
+    # Predictions on training data
+    train_outputs = model(X_train_tensor)
+    train_predictions = (train_outputs >= 0.5).float()  # Apply threshold for classification
+    train_accuracy = (train_predictions == y_train_tensor).float().mean().item() * 100
+    
+    # Predictions on test data
+    test_outputs = model(X_test_tensor)
+    test_predictions = (test_outputs >= 0.5).float()
+    test_accuracy = (test_predictions == y_test_tensor).float().mean().item() * 100
+
+# Print accuracy
+print(f"\nTraining Accuracy: {train_accuracy:.2f}%")
+print(f"Testing Accuracy: {test_accuracy:.2f}%")
