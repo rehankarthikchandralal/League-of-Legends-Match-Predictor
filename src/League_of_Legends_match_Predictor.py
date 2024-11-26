@@ -56,8 +56,24 @@ model = LogisticRegressionModel(input_dim)
 print("Initialized Model:")
 print(model)
 
-#  Define the loss function
+# Define the loss function
 criterion = nn.BCELoss()  # Binary Cross-Entropy Loss
 
 # Define the optimizer
 optimizer = optim.SGD(model.parameters(), lr=0.01)  # Stochastic Gradient Descent with learning rate 0.01
+
+# Print loss and optimizer settings
+print("\nLoss Function: Binary Cross-Entropy Loss (BCELoss)")
+print("Optimizer: Stochastic Gradient Descent (SGD)")
+
+# Additional Lines: Create a DataLoader for batching
+train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
+
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)  # Batch size of 32
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+
+# Output the DataLoader structure for verification
+print("\nDataLoaders:")
+print(f"Train DataLoader: {len(train_loader)} batches")
+print(f"Test DataLoader: {len(test_loader)} batches")
