@@ -13,7 +13,6 @@ import seaborn as sns
 data = pd.read_csv('/home/rehan/Projects/League_of_Legends_match_Predictor/dataset/league_of_legends_data_large.csv')
 
 # Split data into features (X) and target (y)
-# 'win' is the target and the remaining columns are features
 X = data.drop('win', axis=1)
 y = data['win']
 
@@ -54,7 +53,6 @@ print(model)
 criterion = nn.BCELoss()  # Binary Cross-Entropy Loss
 
 # Set up the optimizer with L2 regularization (weight_decay)
-# weight_decay = 0.01 applies L2 regularization
 optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=0.01)
 
 # Create DataLoader for batching
@@ -154,7 +152,6 @@ print(f"Confusion Matrix saved to: {conf_matrix_file}")
 print(f"Classification Report saved to: {class_report_file}")
 print(f"ROC Curve saved to: {roc_curve_file}")
 
-
 # Save the model's state_dict (weights and biases)
 model_save_path = '/home/rehan/Projects/League_of_Legends_match_Predictor/out/logistic_regression_model.pth'
 torch.save(model.state_dict(), model_save_path)
@@ -175,5 +172,3 @@ with torch.no_grad():
 
 # Print accuracy after evaluation
 print(f"Loaded Model Testing Accuracy: {loaded_test_accuracy:.2f}%")
-
-
