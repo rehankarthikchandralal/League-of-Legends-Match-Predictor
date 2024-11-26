@@ -55,3 +55,9 @@ model = LogisticRegressionModel(input_dim)
 # Print the initialized model structure for confirmation
 print("Initialized Model:")
 print(model)
+
+#  Define the loss function
+criterion = nn.BCELoss()  # Binary Cross-Entropy Loss
+
+# Define the optimizer
+optimizer = optim.SGD(model.parameters(), lr=0.01)  # Stochastic Gradient Descent with learning rate 0.01
