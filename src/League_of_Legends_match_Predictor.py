@@ -47,3 +47,17 @@ class LogisticRegressionModel(nn.Module):
     
     def forward(self, x):
         return torch.sigmoid(self.linear(x))  # Apply sigmoid activation
+    
+
+#  Set input_dim
+input_dim = X_train_tensor.shape[1]  # Number of features
+
+#  Initialize the Logistic Regression Model
+model = LogisticRegressionModel(input_dim)
+
+
+
+# Print the model structure for confirmation
+print("Initialized Model:")
+print(model)
+
