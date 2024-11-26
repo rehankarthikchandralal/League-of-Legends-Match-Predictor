@@ -153,3 +153,27 @@ plt.close()  # Close the plot to avoid display after saving
 print(f"Confusion Matrix saved to: {conf_matrix_file}")
 print(f"Classification Report saved to: {class_report_file}")
 print(f"ROC Curve saved to: {roc_curve_file}")
+
+
+# Save the model's state_dict (weights and biases)
+model_save_path = '/home/rehan/Projects/League_of_Legends_match_Predictor/out/logistic_regression_model.pth'
+torch.save(model.state_dict(), model_save_path)
+print(f"Model saved to: {model_save_path}")
+
+# Reload the model
+loaded_model = LogisticRegressionModel(input_dim)
+loaded_model.load_state_dict(torch.load(model_save_path))
+loaded_model.eval()  # Set the model to evaluation mode after loading
+print(f"Model loaded from: {model_save_path}")
+
+# Evaluation of the loaded model on the test set
+with torch.no_grad():
+    # Predictions on test data
+    loaded_test_outputs = loaded_model(X_test_tensor)
+    loaded_test_predictions = (loaded_test_outputs >= 0.5).float()
+    loaded_test_accuracy = (loaded_test_predictions == y_test_tensor).float().mean().item() * 100
+
+# Print accuracy after evaluation
+print(f"Loaded Model Testing Accuracy: {loaded_test_accuracy:.2f}%")
+
+
