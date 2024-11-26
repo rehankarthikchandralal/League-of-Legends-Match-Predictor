@@ -34,17 +34,13 @@ class LogisticRegressionModel(nn.Module):
         self.linear = nn.Linear(input_dim, 1)
     
     def forward(self, x):
-        return torch.sigmoid(self.linear(x))  # Apply sigmoid activation
+        return torch.sigmoid(self.linear(x))
 
 # Set input_dim
 input_dim = X_train_tensor.shape[1]
 
 # Initialize the Logistic Regression Model
 model = LogisticRegressionModel(input_dim)
-
-# Print the initialized model structure for confirmation
-print("Initialized Model:")
-print(model)
 
 # Define the loss function
 criterion = nn.BCELoss()  # Binary Cross-Entropy Loss
@@ -59,40 +55,28 @@ test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
-# Number of epochs
-num_epochs = 1000
-
 # Training loop with L2 Regularization
-for epoch in range(num_epochs):
-    model.train()  # Set model to training mode
+for epoch in range(1000):
+    model.train()
     epoch_loss = 0.0
-    
     for X_batch, y_batch in train_loader:
-        optimizer.zero_grad()  # Clear gradients
-        outputs = model(X_batch)  # Forward pass
-        loss = criterion(outputs, y_batch)  # Compute loss
-        loss.backward()  # Backpropagation
-        optimizer.step()  # Update weights
-        
-        epoch_loss += loss.item()  # Accumulate batch loss
-
-    # Print loss every 100 epochs
-    if (epoch + 1) % 100 == 0:
-        print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {epoch_loss / len(train_loader):.4f}")
+        optimizer.zero_grad()
+        outputs = model(X_batch)
+        loss = criterion(outputs, y_batch)
+        loss.backward()
+        optimizer.step()
+        epoch_loss += loss.item()
 
 # Model Evaluation
-model.eval()  # Set model to evaluation mode
-with torch.no_grad():  # Disable gradient computation
-    # Predictions on training data
+model.eval()
+with torch.no_grad():
     train_outputs = model(X_train_tensor)
-    train_predictions = (train_outputs >= 0.5).float()  # Apply threshold for classification
+    train_predictions = (train_outputs >= 0.5).float()
     train_accuracy = (train_predictions == y_train_tensor).float().mean().item() * 100
     
-    # Predictions on test data
     test_outputs = model(X_test_tensor)
     test_predictions = (test_outputs >= 0.5).float()
     test_accuracy = (test_predictions == y_test_tensor).float().mean().item() * 100
 
-# Print accuracy after evaluation
 print(f"\nTraining Accuracy: {train_accuracy:.2f}%")
 print(f"Testing Accuracy: {test_accuracy:.2f}%")
