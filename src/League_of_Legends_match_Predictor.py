@@ -15,21 +15,12 @@ X = data.drop('win', axis=1)
 y = data['win']
 
 # Split the data into training and testing sets (80% for training, 20% for testing)
-# random_state=42 ensures reproducibility of the split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Standardize the features
 scaler = StandardScaler()
-
-# Fit the scaler on the training data and transform both training and testing sets into PyTorch tensors
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
-
-# Output the shapes of the resulting datasets for confirmation
-print(f"X_train_scaled shape: {X_train_scaled.shape}")
-print(f"X_test_scaled shape: {X_test_scaled.shape}")
-print(f"y_train shape: {y_train.shape}")
-print(f"y_test shape: {y_test.shape}")
 
 # Convert scaled datasets to PyTorch tensors
 X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32)
@@ -59,12 +50,13 @@ print(model)
 # Define the loss function
 criterion = nn.BCELoss()  # Binary Cross-Entropy Loss
 
-# Define the optimizer
-optimizer = optim.SGD(model.parameters(), lr=0.01)  # Stochastic Gradient Descent with learning rate 0.01
+# Set up the optimizer with L2 regularization (weight_decay)
+# weight_decay = 0.01 applies L2 regularization
+optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=0.01)
 
 # Print loss and optimizer settings
 print("\nLoss Function: Binary Cross-Entropy Loss (BCELoss)")
-print("Optimizer: Stochastic Gradient Descent (SGD)")
+print("Optimizer: Stochastic Gradient Descent (SGD) with L2 Regularization (weight_decay=0.01)")
 
 # Additional Lines: Create a DataLoader for batching
 train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
