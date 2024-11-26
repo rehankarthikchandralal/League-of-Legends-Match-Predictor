@@ -10,7 +10,6 @@ from torch.utils.data import DataLoader, TensorDataset
 data = pd.read_csv('/home/rehan/Projects/League_of_Legends_match_Predictor/league_of_legends_data_large.csv')
 
 # Split data into features (X) and target (y)
-# 'win' is the target and the remaining columns are features
 X = data.drop('win', axis=1)
 y = data['win']
 
@@ -25,20 +24,20 @@ X_test_scaled = scaler.transform(X_test)
 # Convert scaled datasets to PyTorch tensors
 X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32)
 X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
-y_train_tensor = torch.tensor(y_train.values, dtype=torch.float32).unsqueeze(1)  # Convert to 2D tensor
-y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32).unsqueeze(1)    # Convert to 2D tensor
+y_train_tensor = torch.tensor(y_train.values, dtype=torch.float32).unsqueeze(1)
+y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32).unsqueeze(1)
 
 # Define the Logistic Regression Model
 class LogisticRegressionModel(nn.Module):
     def __init__(self, input_dim):
         super(LogisticRegressionModel, self).__init__()
-        self.linear = nn.Linear(input_dim, 1)  # Linear layer for logistic regression
+        self.linear = nn.Linear(input_dim, 1)
     
     def forward(self, x):
         return torch.sigmoid(self.linear(x))  # Apply sigmoid activation
 
 # Set input_dim
-input_dim = X_train_tensor.shape[1]  # Number of features
+input_dim = X_train_tensor.shape[1]
 
 # Initialize the Logistic Regression Model
 model = LogisticRegressionModel(input_dim)
@@ -51,24 +50,14 @@ print(model)
 criterion = nn.BCELoss()  # Binary Cross-Entropy Loss
 
 # Set up the optimizer with L2 regularization (weight_decay)
-# weight_decay = 0.01 applies L2 regularization
 optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=0.01)
-
-# Print loss and optimizer settings
-print("\nLoss Function: Binary Cross-Entropy Loss (BCELoss)")
-print("Optimizer: Stochastic Gradient Descent (SGD) with L2 Regularization (weight_decay=0.01)")
 
 # Create DataLoader for batching
 train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
 test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
 
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)  # Batch size of 32
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
-
-# Output the DataLoader structure for verification
-print("\nDataLoaders:")
-print(f"Train DataLoader: {len(train_loader)} batches")
-print(f"Test DataLoader: {len(test_loader)} batches")
 
 # Number of epochs
 num_epochs = 1000

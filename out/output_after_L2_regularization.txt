@@ -1,0 +1,17 @@
+Initialized Model:
+LogisticRegressionModel(
+  (linear): Linear(in_features=8, out_features=1, bias=True)
+)
+Epoch [100/1000], Loss: 0.6856
+Epoch [200/1000], Loss: 0.6856
+Epoch [300/1000], Loss: 0.6856
+Epoch [400/1000], Loss: 0.6856
+Epoch [500/1000], Loss: 0.6856
+Epoch [600/1000], Loss: 0.6856
+Epoch [700/1000], Loss: 0.6856
+Epoch [800/1000], Loss: 0.6856
+Epoch [900/1000], Loss: 0.6856
+Epoch [1000/1000], Loss: 0.6856
+
+Training Accuracy: 54.37%
+Testing Accuracy: 50.50%
