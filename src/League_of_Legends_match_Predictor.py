@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load the dataset
-data = pd.read_csv('/home/rehan/Projects/League_of_Legends_match_Predictor/league_of_legends_data_large.csv')
+data = pd.read_csv('/home/rehan/Projects/League_of_Legends_match_Predictor/dataset/league_of_legends_data_large.csv')
 
 # Split data into features (X) and target (y)
 # 'win' is the target and the remaining columns are features
@@ -107,24 +107,33 @@ conf_matrix = confusion_matrix(y_test, test_predictions)
 print("\nConfusion Matrix:")
 print(conf_matrix)
 
-# Plot Confusion Matrix
+# Plot Confusion Matrix and Save to file
 plt.figure(figsize=(6, 6))
 sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=['Predicted: 0', 'Predicted: 1'], yticklabels=['Actual: 0', 'Actual: 1'])
 plt.title('Confusion Matrix')
 plt.ylabel('Actual')
 plt.xlabel('Predicted')
-plt.show()
+
+# Save Confusion Matrix plot to a file
+conf_matrix_file = '/home/rehan/Projects/League_of_Legends_match_Predictor/out/confusion_matrix.png'
+plt.savefig(conf_matrix_file)
+plt.close()  # Close the plot to avoid display after saving
 
 # Classification Report
 class_report = classification_report(y_test, test_predictions, target_names=['Class 0', 'Class 1'])
 print("\nClassification Report:")
 print(class_report)
 
+# Save Classification Report to a text file
+class_report_file = '/home/rehan/Projects/League_of_Legends_match_Predictor/out/classification_report.txt'
+with open(class_report_file, 'w') as f:
+    f.write(class_report)
+
 # ROC Curve and AUC
 fpr, tpr, thresholds = roc_curve(y_test, test_outputs.detach().numpy())
 roc_auc = auc(fpr, tpr)
 
-# Plot ROC Curve
+# Plot ROC Curve and Save to file
 plt.figure(figsize=(8, 6))
 plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
 plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
@@ -134,4 +143,13 @@ plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
 plt.title('Receiver Operating Characteristic (ROC) Curve')
 plt.legend(loc='lower right')
-plt.show()
+
+# Save ROC Curve plot to a file
+roc_curve_file = '/home/rehan/Projects/League_of_Legends_match_Predictor/out/roc_curve.png'
+plt.savefig(roc_curve_file)
+plt.close()  # Close the plot to avoid display after saving
+
+# Optional: Print paths to saved files
+print(f"Confusion Matrix saved to: {conf_matrix_file}")
+print(f"Classification Report saved to: {class_report_file}")
+print(f"ROC Curve saved to: {roc_curve_file}")
