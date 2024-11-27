@@ -124,6 +124,21 @@ def evaluate_feature_importance(model, feature_names):
     # Show the plot
     plt.show()
 
+
+def save_predictions(model, X_test_tensor, y_test_tensor, filename='predictions.csv'):
+    model.eval()
+    with torch.no_grad():
+        test_outputs = model(X_test_tensor)
+        test_predictions = (test_outputs >= 0.5).float()
+
+    predictions_df = pd.DataFrame({
+        'Actual': y_test_tensor.squeeze().numpy(),
+        'Predicted': test_predictions.squeeze().numpy()
+    })
+
+    predictions_df.to_csv(filename, index=False)
+    print(f"Predictions saved to {filename}")
+
 # Define learning rates to test
 learning_rates = [0.01, 0.05, 0.1]
 
