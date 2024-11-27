@@ -33,15 +33,40 @@ y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32).unsqueeze(1)   
 # Define the Logistic Regression Model
 class LogisticRegressionModel(nn.Module):
     def __init__(self, input_dim):
+        """
+        Initializes the logistic regression model.
+        
+        Args:
+        input_dim (int): Number of input features.
+        """
         super(LogisticRegressionModel, self).__init__()
         self.linear = nn.Linear(input_dim, 1)  # Linear layer for logistic regression
     
     def forward(self, x):
+        """
+        Forward pass of the model.
+        
+        Args:
+        x (torch.Tensor): Input features.
+        
+        Returns:
+        torch.Tensor: Predictions after applying the sigmoid activation.
+        """
         return torch.sigmoid(self.linear(x))  # Apply sigmoid activation
 
 # Function to train and evaluate the model
 def train_and_evaluate_model(lr):
+    """
+    Trains and evaluates the logistic regression model on the dataset.
+    
+    Args:
+    lr (float): Learning rate for training the model.
+    
+    Returns:
+    float: Testing accuracy of the model.
+    """
     print(f"\nTraining with learning rate: {lr}")
+
     # Initialize the model
     model = LogisticRegressionModel(X_train_tensor.shape[1])
 
@@ -91,6 +116,7 @@ def train_and_evaluate_model(lr):
 
 
     save_predictions(model, X_test_tensor, y_test_tensor)
+
     # Evaluate Feature Importance
     evaluate_feature_importance(model, X_train.columns)
 
@@ -98,6 +124,13 @@ def train_and_evaluate_model(lr):
 
 # Function to evaluate feature importance
 def evaluate_feature_importance(model, feature_names):
+    """
+    Evaluates and plots the importance of features based on the model weights.
+    
+    Args:
+    model (nn.Module): Trained PyTorch model.
+    feature_names (list): List of feature names.
+    """
     # Extract weights from the trained model
     weights = model.linear.weight.data.numpy().flatten()
 
@@ -130,6 +163,15 @@ def evaluate_feature_importance(model, feature_names):
 
 
 def save_predictions(model, X_test_tensor, y_test_tensor, filename='/home/rehan/Projects/League_of_Legends_match_Predictor/out/predictions.csv'):
+    """
+    Saves the model predictions to a CSV file.
+    
+    Args:
+    model (nn.Module): Trained PyTorch model.
+    X_test_tensor (torch.Tensor): Tensor of test features.
+    y_test_tensor (torch.Tensor): Tensor of actual test labels.
+    filename (str): Path to save the predictions CSV file.
+    """
     model.eval()
     with torch.no_grad():
         # Get the predictions from the model
