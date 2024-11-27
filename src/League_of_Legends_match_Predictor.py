@@ -89,6 +89,8 @@ def train_and_evaluate_model(lr):
 
     print(f"Testing Accuracy for learning rate {lr}: {test_accuracy:.2f}%")
 
+
+    save_predictions(model, X_test_tensor, y_test_tensor)
     # Evaluate Feature Importance
     evaluate_feature_importance(model, X_train.columns)
 
@@ -127,7 +129,7 @@ def evaluate_feature_importance(model, feature_names):
 
 
 
-def save_predictions(model, X_test_tensor, y_test_tensor, filename='predictions.csv'):
+def save_predictions(model, X_test_tensor, y_test_tensor, filename='/home/rehan/Projects/League_of_Legends_match_Predictor/out/predictions.csv'):
     model.eval()
     with torch.no_grad():
         # Get the predictions from the model
@@ -151,6 +153,7 @@ def save_predictions(model, X_test_tensor, y_test_tensor, filename='predictions.
     # Save DataFrame to CSV
     predictions_df.to_csv(filename, index=False)
     print(f"Predictions saved to {filename}")
+
 
 
 # Define learning rates to test
