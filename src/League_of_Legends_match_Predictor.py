@@ -121,23 +121,37 @@ def evaluate_feature_importance(model, feature_names):
     plt.ylabel('Feature')
     plt.tight_layout()
 
-    # Show the plot
-    plt.show()
+    # Save the plot to a file
+    plt.savefig('feature_importance.png', dpi=300)
+    print("Feature importance plot saved as 'feature_importance.png'")
+
 
 
 def save_predictions(model, X_test_tensor, y_test_tensor, filename='predictions.csv'):
     model.eval()
     with torch.no_grad():
+        # Get the predictions from the model
         test_outputs = model(X_test_tensor)
         test_predictions = (test_outputs >= 0.5).float()
 
+        # Print debug information to verify predictions
+        print("Predictions:", test_predictions[:5].squeeze().numpy())
+        print("Actual values:", y_test_tensor.squeeze().numpy()[:5])
+
+    # Create a DataFrame with predictions
     predictions_df = pd.DataFrame({
         'Actual': y_test_tensor.squeeze().numpy(),
         'Predicted': test_predictions.squeeze().numpy()
     })
 
+    # Print debug information about DataFrame content
+    print("Predictions DataFrame:")
+    print(predictions_df.head())
+
+    # Save DataFrame to CSV
     predictions_df.to_csv(filename, index=False)
     print(f"Predictions saved to {filename}")
+
 
 # Define learning rates to test
 learning_rates = [0.01, 0.05, 0.1]
