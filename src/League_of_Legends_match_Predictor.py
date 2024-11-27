@@ -105,6 +105,10 @@ def evaluate_feature_importance(model, feature_names):
         'Importance': weights
     })
 
+    # Debug print to check the DataFrame content
+    print("Feature Importance DataFrame:")
+    print(feature_importance_df)
+
     # Sort features by the absolute value of their importance
     feature_importance_df['Absolute_Importance'] = feature_importance_df['Importance'].abs()
     feature_importance_df = feature_importance_df.sort_values(by='Absolute_Importance', ascending=False)
@@ -116,6 +120,8 @@ def evaluate_feature_importance(model, feature_names):
     plt.xlabel('Absolute Importance')
     plt.ylabel('Feature')
     plt.tight_layout()
+
+    # Show the plot
     plt.show()
 
 # Define learning rates to test
