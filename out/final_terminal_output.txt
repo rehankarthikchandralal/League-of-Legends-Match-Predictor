@@ -1,0 +1,109 @@
+
+Training with learning rate: 0.01
+Epoch [100/1000], Loss: 0.6856
+Epoch [200/1000], Loss: 0.6856
+Epoch [300/1000], Loss: 0.6856
+Epoch [400/1000], Loss: 0.6856
+Epoch [500/1000], Loss: 0.6856
+Epoch [600/1000], Loss: 0.6856
+Epoch [700/1000], Loss: 0.6855
+Epoch [800/1000], Loss: 0.6856
+Epoch [900/1000], Loss: 0.6856
+Epoch [1000/1000], Loss: 0.6856
+Testing Accuracy for learning rate 0.01: 50.50%
+Predictions: [1. 0. 1. 1. 1.]
+Actual values: [0. 0. 0. 1. 1.]
+Predictions DataFrame:
+   Actual  Predicted
+0     0.0        1.0
+1     0.0        0.0
+2     0.0        1.0
+3     1.0        1.0
+4     1.0        1.0
+Predictions saved to /home/rehan/Projects/League_of_Legends_match_Predictor/out/predictions.csv
+Feature Importance DataFrame:
+        Feature  Importance
+0         kills    0.126274
+1        deaths   -0.004298
+2       assists   -0.013093
+3   gold_earned    0.168463
+4            cs   -0.007013
+5  wards_placed    0.102234
+6  wards_killed   -0.032684
+7  damage_dealt   -0.017762
+Feature importance plot saved as 'feature_importance.png'
+
+Training with learning rate: 0.05
+Epoch [100/1000], Loss: 0.6868
+Epoch [200/1000], Loss: 0.6869
+Epoch [300/1000], Loss: 0.6868
+Epoch [400/1000], Loss: 0.6866
+Epoch [500/1000], Loss: 0.6869
+Epoch [600/1000], Loss: 0.6871
+Epoch [700/1000], Loss: 0.6869
+Epoch [800/1000], Loss: 0.6868
+Epoch [900/1000], Loss: 0.6869
+Epoch [1000/1000], Loss: 0.6869
+Testing Accuracy for learning rate 0.05: 52.00%
+Predictions: [1. 0. 1. 1. 1.]
+Actual values: [0. 0. 0. 1. 1.]
+Predictions DataFrame:
+   Actual  Predicted
+0     0.0        1.0
+1     0.0        0.0
+2     0.0        1.0
+3     1.0        1.0
+4     1.0        1.0
+Predictions saved to /home/rehan/Projects/League_of_Legends_match_Predictor/out/predictions.csv
+Feature Importance DataFrame:
+        Feature  Importance
+0         kills    0.126526
+1        deaths   -0.002694
+2       assists   -0.013049
+3   gold_earned    0.165883
+4            cs   -0.011630
+5  wards_placed    0.103141
+6  wards_killed   -0.036384
+7  damage_dealt   -0.016990
+Feature importance plot saved as 'feature_importance.png'
+
+Training with learning rate: 0.1
+Epoch [100/1000], Loss: 0.6882
+Epoch [200/1000], Loss: 0.6882
+Epoch [300/1000], Loss: 0.6880
+Epoch [400/1000], Loss: 0.6878
+Epoch [500/1000], Loss: 0.6886
+Epoch [600/1000], Loss: 0.6881
+Epoch [700/1000], Loss: 0.6887
+Epoch [800/1000], Loss: 0.6884
+Epoch [900/1000], Loss: 0.6885
+Epoch [1000/1000], Loss: 0.6880
+Testing Accuracy for learning rate 0.1: 52.00%
+Predictions: [1. 0. 1. 1. 1.]
+Actual values: [0. 0. 0. 1. 1.]
+Predictions DataFrame:
+   Actual  Predicted
+0     0.0        1.0
+1     0.0        0.0
+2     0.0        1.0
+3     1.0        1.0
+4     1.0        1.0
+Predictions saved to /home/rehan/Projects/League_of_Legends_match_Predictor/out/predictions.csv
+Feature Importance DataFrame:
+        Feature  Importance
+0         kills    0.128022
+1        deaths    0.000853
+2       assists   -0.010288
+3   gold_earned    0.159772
+4            cs   -0.001851
+5  wards_placed    0.095948
+6  wards_killed   -0.023872
+7  damage_dealt   -0.010649
+Feature importance plot saved as 'feature_importance.png'
+
+Hyperparameter Tuning Results:
+Learning Rate: 0.01, Test Accuracy: 50.50%
+Learning Rate: 0.05, Test Accuracy: 52.00%
+Learning Rate: 0.1, Test Accuracy: 52.00%
+
+Best Learning Rate: 0.05 with Test Accuracy: 52.00%
