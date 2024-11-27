@@ -88,7 +88,35 @@ def train_and_evaluate_model(lr):
         test_accuracy = (test_predictions == y_test_tensor).float().mean().item() * 100
 
     print(f"Testing Accuracy for learning rate {lr}: {test_accuracy:.2f}%")
+
+    # Evaluate Feature Importance
+    evaluate_feature_importance(model, X_train.columns)
+
     return test_accuracy
+
+# Function to evaluate feature importance
+def evaluate_feature_importance(model, feature_names):
+    # Extract weights from the trained model
+    weights = model.linear.weight.data.numpy().flatten()
+
+    # Create a DataFrame with feature names and their importance
+    feature_importance_df = pd.DataFrame({
+        'Feature': feature_names,
+        'Importance': weights
+    })
+
+    # Sort features by the absolute value of their importance
+    feature_importance_df['Absolute_Importance'] = feature_importance_df['Importance'].abs()
+    feature_importance_df = feature_importance_df.sort_values(by='Absolute_Importance', ascending=False)
+
+    # Plot the feature importance
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='Absolute_Importance', y='Feature', data=feature_importance_df, palette='viridis')
+    plt.title('Feature Importance')
+    plt.xlabel('Absolute Importance')
+    plt.ylabel('Feature')
+    plt.tight_layout()
+    plt.show()
 
 # Define learning rates to test
 learning_rates = [0.01, 0.05, 0.1]
