@@ -39,136 +39,74 @@ class LogisticRegressionModel(nn.Module):
     def forward(self, x):
         return torch.sigmoid(self.linear(x))  # Apply sigmoid activation
 
-# Set input_dim
-input_dim = X_train_tensor.shape[1]  # Number of features
+# Function to train and evaluate the model
+def train_and_evaluate_model(lr):
+    print(f"\nTraining with learning rate: {lr}")
+    # Initialize the model
+    model = LogisticRegressionModel(X_train_tensor.shape[1])
 
-# Initialize the Logistic Regression Model
-model = LogisticRegressionModel(input_dim)
+    # Define the loss function
+    criterion = nn.BCELoss()  # Binary Cross-Entropy Loss
 
-# Print the initialized model structure for confirmation
-print("Initialized Model:")
-print(model)
+    # Define the optimizer
+    optimizer = optim.SGD(model.parameters(), lr=lr, weight_decay=0.01)
 
-# Define the loss function
-criterion = nn.BCELoss()  # Binary Cross-Entropy Loss
+    # Create DataLoader for batching
+    train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+    test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
 
-# Set up the optimizer with L2 regularization (weight_decay)
-optimizer = optim.SGD(model.parameters(), lr=0.01, weight_decay=0.01)
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)  # Batch size of 32
+    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
-# Create DataLoader for batching
-train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
-test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
+    # Number of epochs
+    num_epochs = 1000
 
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)  # Batch size of 32
-test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+    # Training loop
+    for epoch in range(num_epochs):
+        model.train()  # Set model to training mode
+        epoch_loss = 0.0
 
-# Number of epochs
-num_epochs = 1000
+        for X_batch, y_batch in train_loader:
+            optimizer.zero_grad()  # Clear gradients
+            outputs = model(X_batch)  # Forward pass
+            loss = criterion(outputs, y_batch)  # Compute loss
+            loss.backward()  # Backpropagation
+            optimizer.step()  # Update weights
 
-# Training loop with L2 Regularization
-for epoch in range(num_epochs):
-    model.train()  # Set model to training mode
-    epoch_loss = 0.0
-    
-    for X_batch, y_batch in train_loader:
-        optimizer.zero_grad()  # Clear gradients
-        outputs = model(X_batch)  # Forward pass
-        loss = criterion(outputs, y_batch)  # Compute loss
-        loss.backward()  # Backpropagation
-        optimizer.step()  # Update weights
-        
-        epoch_loss += loss.item()  # Accumulate batch loss
+            epoch_loss += loss.item()  # Accumulate batch loss
 
-    # Print loss every 100 epochs
-    if (epoch + 1) % 100 == 0:
-        print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {epoch_loss / len(train_loader):.4f}")
+        # Print loss every 100 epochs
+        if (epoch + 1) % 100 == 0:
+            print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {epoch_loss / len(train_loader):.4f}")
 
-# Model Evaluation
-model.eval()  # Set model to evaluation mode
-with torch.no_grad():  # Disable gradient computation
-    # Predictions on training data
-    train_outputs = model(X_train_tensor)
-    train_predictions = (train_outputs >= 0.5).float()  # Apply threshold for classification
-    train_accuracy = (train_predictions == y_train_tensor).float().mean().item() * 100
-    
-    # Predictions on test data
-    test_outputs = model(X_test_tensor)
-    test_predictions = (test_outputs >= 0.5).float()
-    test_accuracy = (test_predictions == y_test_tensor).float().mean().item() * 100
+    # Evaluate the model
+    model.eval()  # Set model to evaluation mode
+    with torch.no_grad():
+        # Predictions on test data
+        test_outputs = model(X_test_tensor)
+        test_predictions = (test_outputs >= 0.5).float()
+        test_accuracy = (test_predictions == y_test_tensor).float().mean().item() * 100
 
-# Print accuracy after evaluation
-print(f"\nTraining Accuracy: {train_accuracy:.2f}%")
-print(f"Testing Accuracy: {test_accuracy:.2f}%")
+    print(f"Testing Accuracy for learning rate {lr}: {test_accuracy:.2f}%")
+    return test_accuracy
 
-# Confusion Matrix
-conf_matrix = confusion_matrix(y_test, test_predictions)
-print("\nConfusion Matrix:")
-print(conf_matrix)
+# Define learning rates to test
+learning_rates = [0.01, 0.05, 0.1]
 
-# Plot Confusion Matrix and Save to file
-plt.figure(figsize=(6, 6))
-sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=['Predicted: 0', 'Predicted: 1'], yticklabels=['Actual: 0', 'Actual: 1'])
-plt.title('Confusion Matrix')
-plt.ylabel('Actual')
-plt.xlabel('Predicted')
+# Perform hyperparameter tuning
+best_lr = None
+best_accuracy = 0
+results = {}
 
-# Save Confusion Matrix plot to a file
-conf_matrix_file = '/home/rehan/Projects/League_of_Legends_match_Predictor/out/confusion_matrix.png'
-plt.savefig(conf_matrix_file)
-plt.close()  # Close the plot to avoid display after saving
+for lr in learning_rates:
+    accuracy = train_and_evaluate_model(lr)
+    results[lr] = accuracy
+    if accuracy > best_accuracy:
+        best_accuracy = accuracy
+        best_lr = lr
 
-# Classification Report
-class_report = classification_report(y_test, test_predictions, target_names=['Class 0', 'Class 1'])
-print("\nClassification Report:")
-print(class_report)
+print("\nHyperparameter Tuning Results:")
+for lr, accuracy in results.items():
+    print(f"Learning Rate: {lr}, Test Accuracy: {accuracy:.2f}%")
 
-# Save Classification Report to a text file
-class_report_file = '/home/rehan/Projects/League_of_Legends_match_Predictor/out/classification_report.txt'
-with open(class_report_file, 'w') as f:
-    f.write(class_report)
-
-# ROC Curve and AUC
-fpr, tpr, thresholds = roc_curve(y_test, test_outputs.detach().numpy())
-roc_auc = auc(fpr, tpr)
-
-# Plot ROC Curve and Save to file
-plt.figure(figsize=(8, 6))
-plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
-plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver Operating Characteristic (ROC) Curve')
-plt.legend(loc='lower right')
-
-# Save ROC Curve plot to a file
-roc_curve_file = '/home/rehan/Projects/League_of_Legends_match_Predictor/out/roc_curve.png'
-plt.savefig(roc_curve_file)
-plt.close()  # Close the plot to avoid display after saving
-
-# Optional: Print paths to saved files
-print(f"Confusion Matrix saved to: {conf_matrix_file}")
-print(f"Classification Report saved to: {class_report_file}")
-print(f"ROC Curve saved to: {roc_curve_file}")
-
-# Save the model's state_dict (weights and biases)
-model_save_path = '/home/rehan/Projects/League_of_Legends_match_Predictor/out/logistic_regression_model.pth'
-torch.save(model.state_dict(), model_save_path)
-print(f"Model saved to: {model_save_path}")
-
-# Reload the model
-loaded_model = LogisticRegressionModel(input_dim)
-loaded_model.load_state_dict(torch.load(model_save_path))
-loaded_model.eval()  # Set the model to evaluation mode after loading
-print(f"Model loaded from: {model_save_path}")
-
-# Evaluation of the loaded model on the test set
-with torch.no_grad():
-    # Predictions on test data
-    loaded_test_outputs = loaded_model(X_test_tensor)
-    loaded_test_predictions = (loaded_test_outputs >= 0.5).float()
-    loaded_test_accuracy = (loaded_test_predictions == y_test_tensor).float().mean().item() * 100
-
-# Print accuracy after evaluation
-print(f"Loaded Model Testing Accuracy: {loaded_test_accuracy:.2f}%")
+print(f"\nBest Learning Rate: {best_lr} with Test Accuracy: {best_accuracy:.2f}%")
